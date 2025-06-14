@@ -1,0 +1,18 @@
+name: build-test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python3 -m pip install --upgrade pip
+      - run: pip install torch torchvision onnx onnxruntime rich pytest
+      - run: pytest -q
