@@ -1,5 +1,11 @@
 import time, torch, torchvision
 from rich import print
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--iters", type=int, default=50)
+args = parser.parse_args()
+iters = args.iters
 
 # 1) Pick the best device
 if   torch.cuda.is_available():

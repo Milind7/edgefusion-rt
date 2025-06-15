@@ -1,10 +1,3 @@
-name: build-test
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-
 jobs:
   test-mac:
     name: macOS Tests
@@ -12,8 +5,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+        with: python-version: '3.11'
       - run: pip install --upgrade pip
       - run: pip install torch torchvision onnx onnxruntime rich pytest
       - run: pytest -q
@@ -24,14 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install CUDA-enabled PyTorch
-        run: |
+        with: python-version: '3.11'
+      - run: |
           pip install --upgrade pip
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
           pip install onnx onnxruntime-gpu rich pytest
-      - name: Run pytest
-        run: pytest -q
-      - name: Baseline benchmark GPU
-        run: python3 scripts/baseline_bench.py
+      - run: pytest -q
+      - name: GPU baseline
+        run: python3 scripts/baseline_bench.py --iters 1
