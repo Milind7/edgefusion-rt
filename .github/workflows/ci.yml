@@ -6,13 +6,32 @@ on:
   pull_request:
 
 jobs:
-  test:
+  test-mac:
+    name: macOS Tests
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python3 -m pip install --upgrade pip
+      - run: pip install --upgrade pip
       - run: pip install torch torchvision onnx onnxruntime rich pytest
       - run: pytest -q
+
+  test-gpu:
+    name: GPU Smoke Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install CUDA-enabled PyTorch
+        run: |
+          pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+          pip install onnx onnxruntime-gpu rich pytest
+      - name: Run pytest
+        run: pytest -q
+      - name: Baseline benchmark GPU
+        run: python3 scripts/baseline_bench.py
