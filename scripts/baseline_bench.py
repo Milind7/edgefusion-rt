@@ -1,11 +1,17 @@
-import time, torch, torchvision
-from rich import print
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--iters", type=int, default=50)
+parser = argparse.ArgumentParser(description="Measure ViT-B-16 FP32 latency")
+parser.add_argument(
+    "--iters", type=int, default=50,
+    help="Number of forward passes to average (use 1 in CI smoke-test)"
+)
 args = parser.parse_args()
 iters = args.iters
+
+import time, torch, torchvision
+from rich import print
+
+
 
 # 1) Pick the best device
 if   torch.cuda.is_available():
